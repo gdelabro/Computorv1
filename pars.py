@@ -1,11 +1,21 @@
 import sys
-import math
 import re
 
 def quit(msg = None):
 	if msg is not None:
 		print(msg)
 	sys.exit(0)
+
+def ft_sqrt(nb):
+	mn = 0
+	mx = nb if nb >= 1 else 1
+	while mx - mn > 0.000000001:
+		mid = (mn + mx) / 2
+		if mid * mid < nb:
+			mn = mid
+		else:
+			mx = mid
+	return mx
 
 class Equ_solver():
 	def __init__(self, equation):
@@ -31,7 +41,10 @@ class Equ_solver():
 		elif self.degree == 1:
 			self.solve_equation_1()
 		else:
-			print("This is not an equation.")
+			if self.x[0] == 0:
+				print("All values of x are a solution.")
+			else:
+				print("The equation has no solution.")
 
 	def split_xs(self):
 		i = 0
@@ -117,19 +130,24 @@ class Equ_solver():
 			if sol.is_integer():
 				sol = int(sol)
 			print(sol)
-		elif discriminant < 0:
-			print("Discriminant is strictly negative, there is no answer.")
-		else:
+		elif discriminant > 0:
 			print("Discriminant is strictly positive, the two solutions are:")
-			sol1 = round((-b - math.sqrt(discriminant)) / (2 * a), 6)
+			sol1 = round((-b - ft_sqrt(discriminant)) / (2 * a), 6)
 			if sol1.is_integer():
 				sol1 = int(sol1)
-			sol2 = round((-b + math.sqrt(discriminant)) / (2 * a), 6)
+			sol2 = round((-b + ft_sqrt(discriminant)) / (2 * a), 6)
 			if sol2.is_integer():
 				sol2 = int(sol2)
-			print(f"{sol1}\n{sol2}")
+			print(f"x1 = {sol1}\nx2 = {sol2}")
+		else:
+			print("Discriminant is strictly negative, the two solutions are:")
+			discriminant = -discriminant
+			sol = [round(-b / (2 * a), 6), round(ft_sqrt(discriminant) / (2 * a), 6)]
+			print(f"x1 = {sol[0]} + {sol[1]}i\nx2 = {sol[0]} - {sol[1]}i")
 		
 	def solve_equation_1(self):
 		print("The solution is:")
 		sol = round(-self.x[0] / self.x[1], 6)
-		print(sol)
+		if sol.is_integer() == True:
+			sol = int(sol)
+		print("x =", sol)
